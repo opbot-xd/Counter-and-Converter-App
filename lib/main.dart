@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'bloc/counter/counter_page.dart'; // Import your counter page
-import 'bloc/convertor/convertor_page.dart'; // Import your converter page
+import 'bloc_config/counter/counter_page.dart'; // Import your counter page
+import 'bloc_config/convertor/convertor_page.dart'; // Import your converter page
 
 void main() {
   runApp(MyApp());
