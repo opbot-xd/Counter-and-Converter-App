@@ -19,7 +19,8 @@ class _CounterPageState extends State<CounterPage> {
 
   void _decrementCounter() {
     setState(() {
-      _count = _count > 0 ? _count - 1 : 0;
+      // _count = _count > 0 ? _count - 1 : 0;
+      _count--;
     });
   }
 

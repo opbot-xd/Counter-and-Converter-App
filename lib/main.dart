@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.amber,
-          title: Text('Flutter Converter App'),
+          title: const Text('Flutter Converter App'),
         ),
         body: _pages[_selectedIndex], // Display the selected page
         bottomNavigationBar: BottomNavigationBar(
