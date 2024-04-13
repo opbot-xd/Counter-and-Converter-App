@@ -1,69 +1,104 @@
 import 'package:flutter/material.dart';
-import 'package:conversion/conversion.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CounterPage extends StatefulWidget {
-  @override
-  _CounterPageState createState() => _CounterPageState();
+// Define events
+abstract class CounterEvent {}
+
+class IncrementEvent extends CounterEvent {}
+
+class DecrementEvent extends CounterEvent {}
+
+class ToggleBinaryEvent extends CounterEvent {}
+
+// Define state
+class CounterState {
+  final int count;
+  final bool isBinary;
+
+  CounterState(this.count, this.isBinary);
 }
 
-class _CounterPageState extends State<CounterPage> {
-  Convert convert = Convert();
-  int _count = 0;
-  bool _isBinary = false;
+// Define BLoC
+class CounterBloc extends Bloc<CounterEvent, CounterState> {
+  CounterBloc() : super(CounterState(0, false));
 
-  void _incrementCounter() {
-    setState(() {
-      _count++;
-    });
+  Stream<CounterState> mapEventToState(CounterEvent event) async* {
+    if (event is IncrementEvent) {
+      yield CounterState(state.count + 1, state.isBinary);
+    } else if (event is DecrementEvent) {
+      yield CounterState(state.count - 1, state.isBinary);
+    } else if (event is ToggleBinaryEvent) {
+      yield CounterState(state.count, !state.isBinary);
+    }
   }
+}
 
-  void _decrementCounter() {
-    setState(() {
-      // _count = _count > 0 ? _count - 1 : 0;
-      _count--;
-    });
-  }
-
-  String _getBinaryString() {
-    // return utf8.encode(_count.toString()).toList().map((b) => b.toRadixString(2).padLeft(8, '0')).join();
-    return convert.decimalToBinary(values: [_count])[0];
-  }
-
+class CounterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => CounterBloc(),
+      child: CounterView(),
+    );
+  }
+}
+
+class CounterView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final CounterBloc counterBloc = BlocProvider.of<CounterBloc>(context);
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Counter App'),
         backgroundColor: Colors.amber,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              _isBinary ? _getBinaryString() : _count.toString(),
-              style: TextStyle(fontSize: 24),
-            ),
-            Row(
+        child: BlocBuilder<CounterBloc, CounterState>(
+          builder: (context, state) {
+            return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: _incrementCounter,
+              children: <Widget>[
+                Text(
+                  state.isBinary
+                      ? state.count.toRadixString(2)
+                      : state.count.toString(),
+                  style: TextStyle(fontSize: 24),
                 ),
-                IconButton(
-                  icon: Icon(Icons.remove),
-                  onPressed: _decrementCounter,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        counterBloc.add(IncrementEvent());
+                      },
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.remove),
+                      onPressed: () {
+                        counterBloc.add(DecrementEvent());
+                      },
+                    ),
+                  ],
+                ),
+                Switch(
+                  value: state.isBinary,
+                  onChanged: (value) {
+                    counterBloc.add(ToggleBinaryEvent());
+                  },
                 ),
               ],
-            ),
-            Switch(
-              value: _isBinary,
-              onChanged: (value) => setState(() => _isBinary = value),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: CounterPage(),
+  ));
 }

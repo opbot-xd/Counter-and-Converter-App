@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:conversion/conversion.dart';
 import 'counter_page.dart'; // Import your counter page
 import 'convertor_page.dart'; // Import your converter page
 
@@ -28,6 +27,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'My Counter App',
       theme: ThemeData(
         primarySwatch: Colors.blue,
