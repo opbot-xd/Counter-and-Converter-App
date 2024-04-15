@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'screens/counter_screens.dart';
 import 'screens/converter_screen.dart';
-import 'blocs/counter_bloc.dart';
-import 'blocs/converter_bloc.dart';
+import 'blocss/counter_bloc.dart';
+import 'blocss/converter_bloc.dart';
 
 void main() {
   runApp(MyApp());
