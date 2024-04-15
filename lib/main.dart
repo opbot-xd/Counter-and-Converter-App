@@ -1,22 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:conversion/conversion.dart';
-import 'counter_page.dart'; // Import your counter page
-import 'convertor_page.dart'; // Import your converter page
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'screens/counter_screens.dart';
+import 'screens/converter_screen.dart';
+import 'blocs/counter_bloc.dart';
+import 'blocs/converter_bloc.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CounterBloc>(create: (context) => CounterBloc()),
+        BlocProvider<ConverterBloc>(create: (context) => ConverterBloc()),
+      ],
+      child: MaterialApp(
+        title: 'My Counter App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: MyHomePage(),
+      ),
+    );
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
   final _pages = [
-    CounterPage(), // Add the CounterPage instance
-    ConverterPage(), // Add the ConverterPage instance
+    CounterScreen(), // Use the BLoC-integrated CounterScreen
+    ConverterScreen(), // Use the BLoC-integrated ConverterScreen
   ];
 
   void _onItemTapped(int index) {
@@ -27,33 +48,27 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My Counter App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.amber,
+        title: const Text('Flutter Converter App'),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amber,
-          title: const Text('Flutter Converter App'),
-        ),
-        body: _pages[_selectedIndex], // Display the selected page
-        bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey,
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.format_list_numbered),
-              label: 'Counter',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.format_align_left),
-              label: 'Converter',
-            ),
-          ],
-        ),
+      body: _pages[_selectedIndex], // Display the selected page
+      bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_list_numbered),
+            label: 'Counter',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.format_align_left),
+            label: 'Converter',
+          ),
+        ],
       ),
     );
   }
